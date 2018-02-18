@@ -11,12 +11,22 @@ def escape_string(input_string,e_str): #input_string is the string where escape 
 	e_str="\\"+e_str
 	return e_str.join(input_string)
 
+def find_dir_files(ls):#find all the files and directories separately 
+	directories=[];
+	files=[];
+	for fod in ls: #fod =files or directories
+		if(os.path.isdir(fod)):
+			directories.append(fod);
+		else:
+			files.append(fod)
+	return directories , files;
 
 
 #change afterwards Downloads to Desktop---------------------- note
 #
 Desktop_location=escape_string(os.popen("cd && cd Downloads && pwd").read()," ");
 os.chdir(Desktop_location[0:-1])#by default os.popen return string ending with \n to remove \n 0:-1 is taken
-print(os.getcwd())
+directories,files=find_dir_files((os.popen("ls -X").read())[0:-1].split("\n"));#list all the files and directories by their type
+
 
 
