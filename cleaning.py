@@ -1,9 +1,18 @@
 import os
 
-##10 largest files codes...... 
-#upgraes---- generalize it to  n....... upgrade to also take smallest...... take the range....-----------------------note
-largest_file_command='cd && sudo find . -type f -printf "%s\t%p\n" | sort -n | tail -10'
-n_largest_files=os.popen(largest_file_command).read();
+##n largest and smallest code
+def required_ranged_file(input_type):
+	if(input_type=='s' or input_type=='S'):#n smallest
+		n=int(input("give n for which n smallest files will be generated\n>"));
+		command='cd && sudo find . -type f -printf "%s\t%p\n" | sort -n | head -'+str(n)
+
+	elif(input_type=='l' or input_type=='L'):#n largest
+		n=int(input("give n for which n largest files will be generated\n>"));
+		command='cd && sudo find . -type f -printf "%s\t%p\n" | sort -n | tail -'+str(n)
+	else:
+		print("Invalid input\nType smallest or the largest");#wrong input
+		return required_ranged_file(input("give input for whether the requirement is for 'largest' files or 'smallest' files\n>")[0])	
+	return os.popen(command).read();#required output
 
 
 def escape_string(input_string,e_str): #input_string is the string where escape of characters to be done and e_str is the character or string to be escaped
@@ -63,7 +72,6 @@ def create_all_folders(extensions,source,Documents_location):
 def move_files(files,source,location):
 	os.chdir(source)
 	for file_name in files:
-		# if(len(file_name.split('.'))>1):
 		if(len(file_name.split('.')[-1])>1):
 			move_file_command="mv -v "+file_name+" "+location+"/"+file_name.split('.')[-1]+"/"
 			file_finaladdress=(remove_escape(location))+"/"+remove_escape(file_name.split('.')[-1])+"/"
@@ -79,6 +87,12 @@ def move_files(files,source,location):
 		print(move_file_command)
 		os.system(move_file_command)
 
+
+
+size_type_input=input("give input for whether the requirement is for 'largest' files or 'smallest' files\n>");
+file_names=required_ranged_file(size_type_input[0]);#required output
+print("Required files are as follows:-\n")
+print(file_names)#printing the result for the n largest of n smallest files
 
 
 
