@@ -11,8 +11,8 @@ def escape_string(input_string,e_str): #input_string is the string where escape 
 	e_str="\\"+e_str
 	return e_str.join(input_string)
 def remove_escape(input_string):
-	print("string here")
-	print(input_string)
+	# print("string here")
+	# print(input_string)
 	input_string=input_string.split("\\")
 	return "".join(input_string)
 
@@ -50,6 +50,53 @@ def move_directories(directories,source,location):#move directories to the folde
 		print(move_directory_command)
 		os.system(move_directory_command)
 
+def find_extensions(files):
+	extensions=[]
+	print(files)
+	for file_name in files:
+		file_name=file_name.split('.');
+		if(len(file_name)>1):
+			extensions.append(file_name[-1])
+		else:
+			extensions.append("unknown_type")
+	return extensions
+
+def create_all_folders(extensions,source,Documents_location):
+	os.chdir(Documents_location)
+	for extension_name in extensions:
+		os.system("mkdir "+extension_name)
+	os.chdir(source)
+
+def move_files(files,source,location):
+	os.chdir(source)
+	print("\n\n\n\n\n")
+	for file_name in files:
+		# if(len(file_name.split('.'))>1):
+		print(location)
+		print(file_name)
+		if(len(file_name.split('.')[-1])>1):
+			move_file_command="mv -v "+file_name+" "+location+"/"+file_name.split('.')[-1]+"/"
+			file_finaladdress=(remove_escape(location))+"/"+remove_escape(file_name.split('.')[-1])+"/"
+
+		else:
+			move_file_command="mv -v "+file_name+" "+location+"/"+"unknown_type"+"/"
+			file_finaladdress=(remove_escape(location))+"/"+"unknown_type/"
+		print(move_file_command)
+		counter=0;
+		print("loc")
+		print(file_finaladdress)
+		print("her")
+		while(os.path.exists(file_finaladdress+remove_escape(file_name.split('.')[0])+str(counter)+"."+remove_escape(file_name.split('.')[1]))):
+			print("existssssssssssssssssssssssssss")
+			# file_name=
+			counter+=1;
+		move_file_command+=file_name.split('.')[0]+str(counter)+"."+file_name.split('.')[1]
+
+		print(move_file_command)
+		os.system(move_file_command)
+	# print(files)
+
+
 
 
 
@@ -75,7 +122,12 @@ if(os.path.isdir(Documents_location)!=True):
 
 directories,files=find_dir_files((os.popen("ls -X").read())[0:-1].split("\n"));#list all the files and directories by their type then differentiate between files and directories
 
-move_directories(directories,Desktop_location,Documents_location)
+move_directories(directories,Desktop_location,Documents_location);
+extensions=find_extensions(files);
+create_all_folders(extensions,Desktop_location,Documents_location)
+move_files(files,Desktop_location,Documents_location)
+print(extensions)
+# move_files(files,Desktop_location,Documents_location);
 
 
 
