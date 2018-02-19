@@ -47,9 +47,11 @@ def move_directories(directories,source,location):#move directories to the folde
 	for dir_name in directories:#creating commands to move the directory from desktop to documents
 		move_directory_command="mv -v "+dir_name+" "+location+"/"#verbose move
 		counter=0;#counter to name the duplicate files
-		while(os.path.exists(remove_escape(location)+"/"+remove_escape(dir_name+str(counter)))):#handling the duplicate file names by numbering them
-			counter+=1;
-		dir_name=dir_name+str(counter);	
+
+		if(os.path.exists(remove_escape(location)+"/"+remove_escape(dir_name))):
+			while(os.path.exists(remove_escape(location)+"/"+remove_escape(dir_name+str(counter)))):#handling the duplicate file names by numbering them
+				counter+=1;
+			dir_name=dir_name+str(counter);	
 		move_directory_command=move_directory_command+dir_name	
 		os.system(move_directory_command)#implementing those commands
 
@@ -72,8 +74,7 @@ def create_all_folders(extensions,source,Documents_location):#creating folders f
 def move_files(files,source,location):#moving all the files corresponding to their extensions
 	os.chdir(source)
 	for file_name in files:
-		# print(file_name)
-		if(len(file_name.split('.')[-1])>1):#checking whether the file has extension or not... this statement tells it has 
+		if(len(file_name.split('.'))>1):#checking whether the file has extension or not... this statement tells it has 
 			move_file_command="mv -v "+file_name+" "+location+"/"+file_name.split('.')[-1]+"/"
 			file_finaladdress=(remove_escape(location))+"/"+remove_escape(file_name.split('.')[-1])+"/"
 		else:
@@ -81,18 +82,24 @@ def move_files(files,source,location):#moving all the files corresponding to the
 			file_finaladdress=(remove_escape(location))+"/"+"unknown_type/"
 			file_name=file_name+".unknown_type"
 		counter=0;
-		print("filename is ",	file_name)
-		while(os.path.exists(file_finaladdress+remove_escape(file_name.split('.')[0])+str(counter)+"."+remove_escape(file_name.split('.')[1]))):
-			counter+=1;
-		move_file_command+=file_name.split('.')[0]+str(counter)+"."+file_name.split('.')[1]#file command creation to move a single file
+		if(os.path.exists(file_finaladdress+remove_escape(file_name.split('.')[0])+"."+remove_escape(file_name.split('.')[1]))):
+			while(os.path.exists(file_finaladdress+remove_escape(file_name.split('.')[0])+str(counter)+"."+remove_escape(file_name.split('.')[1]))):
+				counter+=1;
+			move_file_command+=file_name.split('.')[0]+str(counter);#file command creation to move a single file in case of duplicatoin
+		elif(os.path.exists(file_finaladdress+remove_escape(file_name.split('.')[0])) and file_name.split('.')[1]=="unknown_type"):
+			while(os.path.exists(file_finaladdress+remove_escape(file_name.split('.')[0])+str(counter))):
+				counter+=1;
+			move_file_command+=file_name.split('.')[0]+str(counter);#file command creation to move a single file in case of duplicatoin
+		else:
+			move_file_command+=file_name.split('.')[0]#file command creation to move a single filein case of no duplication
+		if file_name.split('.')[1]!="unknown_type":
+				move_file_command+="."+file_name.split('.')[1]
 		os.system(move_file_command)#moving file
 
 
 
 size_type_input=input("give input for whether the requirement is for 'largest' files or 'smallest' files\n>");
 file_names=required_ranged_file(size_type_input[0]);#required output
-print("Required files are as follows:-\n")
-print(file_names)#printing the result for the n largest of n smallest files
 
 #error handling if there is no Desktop directory
 try:
@@ -104,11 +111,14 @@ except:
 
 #error handling if docments directory is not present then create it
 try:
+	os.system("cd && mkdir Documents")
 	Documents_location=escape_string(os.popen("cd && cd Documents && pwd").read()[0:-1]," ");
+	print("Done")
 except:
 	print("Documents folder not found")
 	print("Creating Documents folder in home directory")
 	os.system("cd && mkdir Documents")
+	Documents_location=escape_string(os.popen("cd && cd Documents && pwd").read()[0:-1]," ");
 
 current_location=escape_string(os.popen("pwd").read()[0:-1]," ");
 os.chdir(Desktop_location)
@@ -117,8 +127,6 @@ print("                                                    ",end='\r')
 print("Dividing them into files and folders...",end='\r')
 print("                                                    ",end='\r')
 directories,files=find_dir_files((os.popen("ls -X").read())[0:-1].split("\n"));#list all the files and directories by their type then differentiate between files and directories
-print("Moving directories....",end='\r')
-move_directories(directories,Desktop_location,Documents_location);#moves all directories from home to Directories directory in Documents
 print("                                                    ",end='\r')
 print("Finding all the extensions...",end='\r')
 print("                                                    ",end='\r')
@@ -126,9 +134,18 @@ extensions=find_extensions(files);
 print("Creating folders for all the extensions...",end='\b')
 print("                                                    ",end='\r')
 create_all_folders(extensions,Desktop_location,Documents_location)
+os.system("clear")
+print("Required files are as follows:-\n")
+print(file_names)#printing the result for the n largest of n smallest files
+print()
+print("Moving directories....",end='\r')
+print()
+move_directories(directories,Desktop_location,Documents_location);#moves all directories from home to Directories directory in Documents
+print()
 print("Moving all the files",end='\b')
-print("                                                    ",end='\r')
+print()
 move_files(files,Desktop_location,Documents_location)
+
 
 
 
