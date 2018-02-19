@@ -53,7 +53,7 @@ def move_directories(directories,source,location):#move directories to the folde
 		move_directory_command=move_directory_command+dir_name	
 		os.system(move_directory_command)#implementing those commands
 
-def find_extensions(files):
+def find_extensions(files):#finding all the extensions
 	extensions=[]
 	for file_name in files:
 		file_name=file_name.split('.');
@@ -63,29 +63,29 @@ def find_extensions(files):
 			extensions.append("unknown_type")
 	return extensions
 
-def create_all_folders(extensions,source,Documents_location):
+def create_all_folders(extensions,source,Documents_location):#creating folders for all the extensions
 	os.chdir(Documents_location)
 	for extension_name in extensions:
 		os.system("mkdir "+extension_name)
 	os.chdir(source)
 
-def move_files(files,source,location):
+def move_files(files,source,location):#moving all the files corresponding to their extensions
 	os.chdir(source)
 	for file_name in files:
-		if(len(file_name.split('.')[-1])>1):
+		# print(file_name)
+		if(len(file_name.split('.')[-1])>1):#checking whether the file has extension or not... this statement tells it has 
 			move_file_command="mv -v "+file_name+" "+location+"/"+file_name.split('.')[-1]+"/"
 			file_finaladdress=(remove_escape(location))+"/"+remove_escape(file_name.split('.')[-1])+"/"
-
 		else:
 			move_file_command="mv -v "+file_name+" "+location+"/"+"unknown_type"+"/"
 			file_finaladdress=(remove_escape(location))+"/"+"unknown_type/"
+			file_name=file_name+".unknown_type"
 		counter=0;
+		print("filename is ",	file_name)
 		while(os.path.exists(file_finaladdress+remove_escape(file_name.split('.')[0])+str(counter)+"."+remove_escape(file_name.split('.')[1]))):
 			counter+=1;
-		move_file_command+=file_name.split('.')[0]+str(counter)+"."+file_name.split('.')[1]
-
-		print(move_file_command)
-		os.system(move_file_command)
+		move_file_command+=file_name.split('.')[0]+str(counter)+"."+file_name.split('.')[1]#file command creation to move a single file
+		os.system(move_file_command)#moving file
 
 
 
@@ -120,10 +120,15 @@ directories,files=find_dir_files((os.popen("ls -X").read())[0:-1].split("\n"));#
 print("Moving directories....",end='\r')
 move_directories(directories,Desktop_location,Documents_location);#moves all directories from home to Directories directory in Documents
 print("                                                    ",end='\r')
-print("Finding all the extensions")
-# extensions=find_extensions(files);
-# create_all_folders(extensions,Desktop_location,Documents_location)
-# move_files(files,Desktop_location,Documents_location)
+print("Finding all the extensions...",end='\r')
+print("                                                    ",end='\r')
+extensions=find_extensions(files);
+print("Creating folders for all the extensions...",end='\b')
+print("                                                    ",end='\r')
+create_all_folders(extensions,Desktop_location,Documents_location)
+print("Moving all the files",end='\b')
+print("                                                    ",end='\r')
+move_files(files,Desktop_location,Documents_location)
 
 
 
