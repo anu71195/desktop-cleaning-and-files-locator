@@ -23,7 +23,7 @@ code can be run from linux terminal with command. The file can be run from any d
 ```
 $ python3 cleaning.py 
 ```
-#FEATURES:
+# FEATURES:
 It takes input from the uesr whether the user wants n largest files or n smallest filein their pc and handles wrong input given by the user.<br />
 Stores all the files in Documents directory in Home directory. If Documents directory is not present then creates it.<br />
 Handles the escape character like white spaces and paranthesis in the path. Also handles removing of escape characters.<br />
