@@ -4,11 +4,11 @@ import os
 def required_ranged_file(input_type):
 	if(input_type=='s' or input_type=='S'):#n smallest
 		n=int(input("give n for which n smallest files will be generated\n>"));
-		command='cd && sudo find . -type f -printf "%s\t%p\n" | sort -n | head -'+str(n)
+		command='cd && cd .. && cd .. && sudo find . -type f -printf "%s\t%p\n" | sort -n | head -'+str(n)
 
 	elif(input_type=='l' or input_type=='L'):#n largest
 		n=int(input("give n for which n largest files will be generated\n>"));
-		command='cd && sudo find . -type f -printf "%s\t%p\n" | sort -n | tail -'+str(n)
+		command='cd && cd .. && cd .. && sudo find . -type f -printf "%s\t%p\n" | sort -n | tail -'+str(n)
 	else:
 		print("Invalid input\nType smallest or the largest");#wrong input
 		return required_ranged_file(input("give input for whether the requirement is for 'largest' files or 'smallest' files\n>")[0])	
